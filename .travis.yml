@@ -1,0 +1,52 @@
+sudo: required
+language: rust
+rust:
+- nightly
+matrix:
+  allow_failures:
+  - rust: nightly
+before_script:
+  - export PATH=$HOME/.cargo/bin:$PATH
+  - cargo install cargo-update || echo "cargo-update already installed"
+  - cargo install cargo-travis || echo "cargo-travis already installed"
+  - cargo install-update -a # update outdated cached binaries
+script:
+- |
+  cargo build &&
+  cargo test &&
+  cargo bench &&
+  cargo doc
+addons:
+  apt:
+    packages:
+    - libcurl4-openssl-dev
+    - libelf-dev
+    - libdw-dev
+    - cmake
+    - gcc
+    - binutils-dev
+    - libiberty-dev
+after_success:
+- cargo doc-upload
+- cargo coveralls
+- |
+  wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+  tar xzf master.tar.gz &&
+  cd kcov-master &&
+  mkdir build &&
+  cd build &&
+  cmake .. &&
+  make &&
+  make install DESTDIR=../../kcov-build &&
+  cd ../.. &&
+  rm -rf kcov-master &&
+  for file in target/debug/*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+  bash <(curl -s https://codecov.io/bash) &&
+  echo "Uploaded code coverage"
+notifications:
+  email:
+    on_success: never
+env:
+  global:
+  - TRAVIS_CARGO_NIGHTLY_FEATURE=dev
+  - secure: bDWqXWnMlRyWda3GbRUKE3PVTsGFNLRI5wJ/YC337e+XdY7w5J0UVj9UWIpy5aE9kN9A5bEgdA8uui9c7dyDt4A+cc5oVDQ45YtN6OKeR3nJoK9dpZX3Weo8B/mhlF2Iq9FtHn+36Ma6N9KGS9y9LED2l4+D3po1TRZY4AY08ZxujfwuHUcY/94EwebPBRLpjdcJpAqfbg+XuzxUbzrjdgMUN4drW1Ahwukg4i1bINI/NNuj4ZuvbYaESp9Oqenu548y2/VoQIVoKTCcs5I87VKVFTwpkdP7fonpvGLUQCF1uoINje+2ycovko2ub2yYjPJ7VxGPkfzVoCT5devrh2+9ActHCGS9fKaH2uFVbFVEl271j3RVUplcvb1+QTypO8tCRfYhzWzmY/gjbA/77+Q1t2edRDjyWWth+f86B1nJXE0/kaJwBHS9WivYptSvI3KAToGZLh4hp79nM7ZZDyYjhb8PfgeszQbBlgKZIG96pO7NFroJ4tq3+uQiWSnrQ+PoBMvubZVPjiaBvWpJ6lDa8mFtQcJ2Oxkkdp23I20W/1gaUZ+wooy3+AodUdOOlE+Yi20fPJllqvfw4M4iU8JEKWCV/rrJepWqZsjivRninC3a8mGflwpw3vLs7FIWKMFWSqIdDcJ1BZmQgsKpCSYpa7l/Yu7tPSiGeyjaFao=

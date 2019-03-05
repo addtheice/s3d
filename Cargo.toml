@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "s3dconverter",
+    "s3d"
+]

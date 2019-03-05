@@ -1,0 +1,11 @@
+[package]
+authors = ["scriptandcompile"]
+description = "Reads, parses, extracts, and writes Everquest S3D files."
+license = "MIT"
+name = "s3dconverter"
+version = "1.0.0"
+edition = '2018'
+
+[dependencies]
+clap = "2.32.0"
+s3d = { path = "../s3d" }

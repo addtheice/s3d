@@ -1,0 +1,24 @@
+[package]
+authors = ["scriptandcompile"]
+description = "Reads, parses, extracts, and writes Everquest S3D files."
+license = "MIT"
+name = "s3d"
+readme = "README.md"
+version = "0.1.0"
+edition = '2018'
+
+[dependencies]
+byteorder = "1.2.4"
+deflate = "0.7.18"
+inflate = "0.4.3"
+
+[dependencies.clippy]
+optional = true
+version = "0.0.212"
+
+[dev-dependencies]
+pretty_assertions = "0.5.1"
+
+[features]
+default = []
+dev = ["clippy"]
