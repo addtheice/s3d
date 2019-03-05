@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `s3d/src/descriptor_block.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>descriptor_block.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../s3d/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="doccomment">/// Inside the s3d file format the s3d header contains</span>
+<span class="doccomment">/// multiple s3d descriptor blocks. These descriptors</span>
+<span class="doccomment">/// define where inside the s3d file the contained files are</span>
+<span class="doccomment">/// stored. These offsets do not have to be in any particular</span>
+<span class="doccomment">/// order which can cause confusion. In practice they tend to</span>
+<span class="doccomment">/// be stored in the file in order of their CRC-32&#39;s.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// For example, the first descriptor could have an offset of</span>
+<span class="doccomment">/// 487, which would be the 487th byte of the over all file,</span>
+<span class="doccomment">/// while the second descriptor block might have an offset of</span>
+<span class="doccomment">/// 37! This would mean the first file in the header comes</span>
+<span class="doccomment">/// after the second file. This is obviously annoying and</span>
+<span class="doccomment">/// could cause some slow down when trying to load an entire</span>
+<span class="doccomment">/// file.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// One solution to this issue is to sort the descriptors by</span>
+<span class="doccomment">/// offset after fully loading all the descriptors.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DescriptorBlock</span> {
+    <span class="doccomment">/// CRC-32 Checksum.</span>
+    <span class="kw">pub</span> <span class="ident">crc</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// The offset is the number of bytes from the start of</span>
+    <span class="doccomment">/// the S3D file where the data chunks for this</span>
+    <span class="doccomment">/// file are stored.</span>
+    <span class="kw">pub</span> <span class="ident">offset</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// The size of the contained data when decompressed.</span>
+    <span class="doccomment">/// It&#39;s important to note this is the size of the data</span>
+    <span class="doccomment">/// decrompressed, not it&#39;s compressed form on disk.</span>
+    <span class="kw">pub</span> <span class="ident">decompressed_size</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// The name of the file. This data is derived by</span>
+    <span class="doccomment">/// reading the directoryblock (last DescriptorBlock</span>
+    <span class="doccomment">/// sorted by offset), each file name is stored inside</span>
+    <span class="doccomment">/// this final DescriptorBlock.</span>
+    <span class="doccomment">/// It&#39;s stored in this structure since it seems the</span>
+    <span class="doccomment">/// logical location to store it.</span>
+    <span class="kw">pub</span> <span class="ident">file_name</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// The compressed data found within each chunk,</span>
+    <span class="doccomment">/// they are appended together after removing the</span>
+    <span class="doccomment">/// ChunkHeader to make it simpler to process.</span>
+    <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span>,
+}
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "s3d";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

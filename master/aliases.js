@@ -1,0 +1,16 @@
+var ALIASES = {};
+ALIASES["adler32"] = {};
+ALIASES["ansi_term"] = {};
+ALIASES["atty"] = {};
+ALIASES["bitflags"] = {};
+ALIASES["byteorder"] = {};
+ALIASES["clap"] = {};
+ALIASES["deflate"] = {};
+ALIASES["inflate"] = {};
+ALIASES["libc"] = {};
+ALIASES["s3d"] = {};
+ALIASES["s3dconverter"] = {};
+ALIASES["strsim"] = {};
+ALIASES["textwrap"] = {};
+ALIASES["unicode_width"] = {};
+ALIASES["vec_map"] = {};

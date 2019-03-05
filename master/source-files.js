@@ -1,0 +1,17 @@
+var N = null;var sourcesIndex = {};
+sourcesIndex["adler32"] = {"name":"","dirs":[],"files":["lib.rs"]};
+sourcesIndex["ansi_term"] = {"name":"","dirs":[],"files":["ansi.rs","debug.rs","difference.rs","display.rs","lib.rs","style.rs","windows.rs","write.rs"]};
+sourcesIndex["atty"] = {"name":"","dirs":[],"files":["lib.rs"]};
+sourcesIndex["bitflags"] = {"name":"","dirs":[],"files":["lib.rs"]};
+sourcesIndex["byteorder"] = {"name":"","dirs":[],"files":["io.rs","lib.rs"]};
+sourcesIndex["clap"] = {"name":"","dirs":[{"name":"app","dirs":[],"files":["help.rs","meta.rs","mod.rs","parser.rs","settings.rs","usage.rs","validator.rs"]},{"name":"args","dirs":[{"name":"arg_builder","dirs":[],"files":["base.rs","flag.rs","mod.rs","option.rs","positional.rs","switched.rs","valued.rs"]}],"files":["any_arg.rs","arg.rs","arg_matcher.rs","arg_matches.rs","group.rs","macros.rs","matched_arg.rs","mod.rs","settings.rs","subcommand.rs"]},{"name":"completions","dirs":[],"files":["bash.rs","elvish.rs","fish.rs","macros.rs","mod.rs","powershell.rs","shell.rs","zsh.rs"]}],"files":["errors.rs","fmt.rs","lib.rs","macros.rs","map.rs","osstringext.rs","strext.rs","suggestions.rs","usage_parser.rs"]};
+sourcesIndex["deflate"] = {"name":"","dirs":[],"files":["bit_reverse.rs","bitstream.rs","chained_hash_table.rs","checksum.rs","compress.rs","compression_options.rs","deflate_state.rs","encoder_state.rs","huffman_lengths.rs","huffman_table.rs","input_buffer.rs","length_encode.rs","lib.rs","lz77.rs","lzvalue.rs","matching.rs","output_writer.rs","rle.rs","stored_block.rs","writer.rs","zlib.rs"]};
+sourcesIndex["inflate"] = {"name":"","dirs":[],"files":["checksum.rs","lib.rs","reader.rs","utils.rs","writer.rs"]};
+sourcesIndex["libc"] = {"name":"","dirs":[{"name":"unix","dirs":[{"name":"notbsd","dirs":[{"name":"linux","dirs":[{"name":"other","dirs":[{"name":"b64","dirs":[],"files":["mod.rs","not_x32.rs","x86_64.rs"]}],"files":["align.rs","mod.rs"]}],"files":["align.rs","mod.rs"]}],"files":["mod.rs"]}],"files":["align.rs","mod.rs"]}],"files":["lib.rs","macros.rs"]};
+sourcesIndex["s3d"] = {"name":"","dirs":[],"files":["chunk_header.rs","descriptor_block.rs","file_data.rs","header.rs","lib.rs"]};
+sourcesIndex["s3dconverter"] = {"name":"","dirs":[],"files":["main.rs"]};
+sourcesIndex["strsim"] = {"name":"","dirs":[],"files":["lib.rs"]};
+sourcesIndex["textwrap"] = {"name":"","dirs":[],"files":["lib.rs"]};
+sourcesIndex["unicode_width"] = {"name":"","dirs":[],"files":["lib.rs","tables.rs"]};
+sourcesIndex["vec_map"] = {"name":"","dirs":[],"files":["lib.rs"]};
+createSourceSidebar();
